@@ -12,12 +12,12 @@ func MergeVar[T any](chanels ...<-chan T) <-chan T {
 	wg.Add(len(chanels))
 
 	for _, chanels := range chanels {
-		go func() {
+		go func(ch <-chan T) {
 			defer wg.Done()
-			for val := range chanels {
+			for val := range ch {
 				resultChan <- val
 			}
-		}()
+		}(chanels)
 	}
 
 	go func() {
